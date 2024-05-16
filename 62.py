@@ -375,8 +375,7 @@ def myEvent(Window):
             y_c += ty
             tx, ty = update_ball_angle(x_c, y_c, r, paddle_points[1][0],paddle_points[1][1],paddle_points[2][0],paddle_points[2][1], tx, ty)
 
-            if check_collision(x_c,y_c,r,paddle_points[1][0],paddle_points[1][1],paddle_points[2][0],paddle_points[2][1]):
-                ty *= -1
+            
             if (x_c+r)>(W/2-1):
                 tx *= -1
             if (x_c-r)<(-W/2):

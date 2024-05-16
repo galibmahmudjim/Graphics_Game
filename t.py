@@ -1,16 +1,13 @@
+import re
 import glfw
 from OpenGL.GL import *
 import math
 import random
 
 
-W, H = 1200, 800
-paddle_points = [(-W//20,-(H//2)+5),(-W//20,-(H//2)+25),(W//20,-(H//2)+25),(W//20,-(H//2)+5)]
-PointerSize = 1
-TX, TY = 5,5
-tx, ty = TX, TY
 
 
+#Base
 colors= [[255,255,255],
 [255,0,0],
 [0,255,0],
@@ -134,8 +131,17 @@ def draw_circle(r,x_c,y_c):
                 y-=1
             draw_8_way(x,y,x_c,y_c)
     glEnd()
+#...........................
 
-    
+
+#constants
+W, H = 1200, 800
+FPS = 60
+paddle_points = [(-W//20,-(H//2)+5),(-W//20,-(H//2)+25),(W//20,-(H//2)+25),(W//20,-(H//2)+5)]
+PointerSize = 1
+T = 3
+TX, TY = 2,2
+tx, ty = TX, TY
 
 testing_flag = False
 
@@ -159,7 +165,6 @@ def construct_bricks(brick_width=W//20,brick_rows = 5):
             row_bricks.append(one_brick)
 
         bricks_list.append(row_bricks)
-    
     return bricks_list
 
 def draw_brick(brick_points,color):
@@ -175,11 +180,9 @@ def draw_brick(brick_points,color):
     zone= get_zone(start_x, y, end_x, y)    
     x0, y0 = allZone_to_3(zone, start_x, y)      
     x1, y1 = allZone_to_3(zone, end_x, y)      
-
     glPointSize(PointerSize)
     glColor3ub(red,green,blue)
     glBegin(GL_POINTS)
-
 
     draw_line_3(x0, y0, x1, y1, zone)
     glEnd()
@@ -260,12 +263,6 @@ def move_paddle_left(paddle_points,move_amount=30):
             new_paddle_points.append((value[0]+move_amount,value[1]))
     return new_paddle_points
 
-
-
-    
-
-
-
 def check_collision(ball_center_x,ball_center_y,ball_radius,paddle_x1,paddle_y1,paddle_x2,paddle_y2):
     closest_x = clamp(ball_center_x, paddle_x1, paddle_x2)
     closest_y = clamp(ball_center_y, paddle_y1, paddle_y2)
@@ -276,47 +273,74 @@ def check_collision(ball_center_x,ball_center_y,ball_radius,paddle_x1,paddle_y1,
         return True
     else:
         return False
-
-def check_brick_collision(brick_points,ball_center, ball_radius=10):
-    global tx,ty
-    p1,p2 = brick_points
-    x,y = ball_center
-    ball_top = y+ball_radius+PointerSize//2
-    for i in range(int(p1[0])-PointerSize//2,int(p2[0])+1+PointerSize//2):
-        if x == i and ball_top == p1[1]:
-            print(p1,p2, ball_top)
-            ty*=-1
-            return True
-    ball_side_right = x+ball_radius+PointerSize//2
-    for i in range(int(p1[1])-PointerSize//2,int(p2[1])+1+PointerSize//2):
-
-        if y == i and ball_side_right == p1[0]:
-            tx*=-1
-            ty = -TY
-            return True
-    ball_side_left = x-ball_radius-PointerSize//2
-    for i in range(int(p1[1])-PointerSize//2,int(p2[1])+1+PointerSize//2):
-        
-        if y == i and ball_side_left == p2[0]:
-            tx*=-1
-            ty = -TY
-            return True
-        
-    return False
-
-
-
 def clamp(value, min_value, max_value):
     return max(min(value, max_value), min_value)
 
+def adjust_ball_angle(x1, y1, x2, y2, ball_x, ball_y, ball_radius):
+    global tx, ty
+    paddle_width = x2 - x1
+    paddle_center_x = x1 + paddle_width / 2
+    hit_position = (ball_x - paddle_center_x) / ((paddle_width-10)/ 2)
+    influence = TX
+    tx = round(abs(influence * hit_position) * math.copysign(1, tx) )
+    ty = round(abs(TY))  
+
+
+def check_brick_collision(circle_x, circle_y, circle_radius, rect_x1, rect_y1, rect_x2, rect_y2):
+    closest_x = max(rect_x1, min(circle_x, rect_x2))
+    closest_y = max(rect_y1, min(circle_y, rect_y2))
+    distance_x = circle_x - closest_x
+    distance_y = circle_y - closest_y
+    distance_squared = distance_x**2 + distance_y**2
+    distance_rectangle = math.sqrt((rect_x2-rect_x1)**2 + (rect_y2-rect_y1)**2)/2.0 + circle_radius
+    distance_from_rectengle_center = math.sqrt(((rect_x1+rect_x2)/2.0 - circle_x)**2 + ((rect_y1+rect_y2)/2.0 - circle_y)**2)
+
+    distance = math.sqrt(distance_squared) - circle_radius
+
+    
+    if distance_from_rectengle_center<=distance_rectangle and (distance_from_rectengle_center) >=(distance_rectangle-5):
+            
+            return False
+    elif distance<=0:
+            print(tx,ty)
+            print(distance_from_rectengle_center,distance_rectangle)
+            return True
+
+
+
+
+
+def update_ball_position(brick_points,ball_center,ball_radius):
+    global tx,ty, TX, TY
+    p1,p2 = brick_points
+    circle_x, circle_y = ball_center
+    circle_radius = ball_radius
+    rect_x1, rect_y1 = p1[0]-PointerSize//2,p1[1]-PointerSize//2
+    rect_x2, rect_y2 = p2[0]+PointerSize//2,p2[1]-PointerSize//2
+    if check_brick_collision(circle_x, circle_y, circle_radius, rect_x1, rect_y1, rect_x2, rect_y2):
+        closest_x = max(rect_x1, min(circle_x, rect_x2))
+        closest_y = max(rect_y1, min(circle_y, rect_y2))
+        if closest_y == rect_y1:
+            print("top")
+            ty = abs(ty)*-1
+        elif closest_y == rect_y2:
+            print("bottom")
+            ty = abs(ty)*1
+        if closest_x == rect_x1:
+            print("left")
+            tx = abs(tx) * -1
+        elif closest_x == rect_x2:
+            print("right")
+            tx = abs(tx)*1
+        return True
+    return False
 
 def check_bricks_collision(bricks_list,bricks_display_list,ball_center_x,ball_center_y,ball_radius):
     for i in range(len(bricks_list)-1,-1,-1):
         for j in range(len(bricks_list[i])):
             if bricks_display_list[i][j]:
                 brick_points = bricks_list[i][j]
-                if check_brick_collision(brick_points,(ball_center_x,ball_center_y),ball_radius):        
-                        
+                if update_ball_position(brick_points,(ball_center_x,ball_center_y),ball_radius):        
                     bricks_display_list[i][j] = False
                     return True
     return False
@@ -338,20 +362,26 @@ def key_callback(window, key, scancode, action, mods):
 def framebuffer_size_callback(window, width, height):
     global W, H, paddle_points,bricks_list,bricks_color_list,bricks_display_list
     W, H = width, height
-    
-    
-    bricks_list = construct_bricks(brick_rows=5, brick_width=W//20)
-
+    initialize()
     glViewport(0, 0, W, H)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     glOrtho(-W/2, W/2-1, -H/2, H/2-1, -1,1)
 
 
-bricks_list = construct_bricks(brick_rows=5, brick_width=W//20)
-bricks_color_list = bricks_color(5,20)
 bricks_display_list = bricks_display(5,20)
-
+bricks_list,bricks_color_list,paddle_points = [],[],[]
+def initialize():
+    global bricks_list,bricks_color_list,bricks_display_list,paddle_points, tx, ty, TX, TY
+    bricks_list = construct_bricks(brick_rows=5, brick_width=W//20)
+    bricks_color_list = bricks_color(5,20)
+    paddle_points = [(-W//20,-(H//2)+5),(-W//20,-(H//2)+25),(W//20,-(H//2)+25),(W//20,-(H//2)+5)]
+    frame_rate = FPS
+    seconds_to_travel = T
+    frames_to_travel = seconds_to_travel * frame_rate
+    ty = round(H // frames_to_travel * math.copysign(1, ty))
+    tx = round(ty * math.copysign(1, tx))
+    TX, TY = tx, ty
 
 def myEvent(Window):
             
@@ -360,7 +390,8 @@ def myEvent(Window):
         global tx,ty
         
         total_score = 0
-
+        initialize()
+        x=0
         while not glfw.window_should_close(Window):     
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
                 
@@ -368,12 +399,12 @@ def myEvent(Window):
             draw_bricks(bricks_list,bricks_color_list,bricks_display_list)
             draw_paddle(paddle_points)
             draw_circle(r,x_c,y_c)
-            
             x_c += tx
             y_c += ty
 
             if check_collision(x_c,y_c,r,paddle_points[1][0],paddle_points[1][1],paddle_points[2][0],paddle_points[2][1]):
-                ty *= -1
+                 adjust_ball_angle(paddle_points[1][0],paddle_points[1][1],paddle_points[2][0],paddle_points[2][1], x_c, y_c, r)
+                 
             if (x_c+r)>(W/2-1):
                 tx *= -1
             if (x_c-r)<(-W/2):
@@ -382,10 +413,10 @@ def myEvent(Window):
                 ty *= -1
             if (y_c-r)<(-H/2):
                 ty *= -1
-                # print()
-                # print("Game Over")
-                # print(f"Your total score is = {total_score}")
-                # print()
+                print()
+                print("Game Over")
+                print(f"Your total score is = {total_score}")
+                print()
                 # break
             if check_bricks_collision(bricks_list,bricks_display_list,x_c,y_c,r):
                 total_score += 1
@@ -393,7 +424,6 @@ def myEvent(Window):
                 print(f"Current Score = {total_score}")
                 print()
 
-            
 
 
             glfw.swap_buffers(Window)
@@ -404,18 +434,29 @@ def myEvent(Window):
 
 
 def main():
-    # Initialize GLFW
+    global W,H,FPS
     if not glfw.init():
         return
     
     monitor = glfw.get_primary_monitor()
-    glfw.window_hint(glfw.RESIZABLE, glfw.TRUE)
-    Window = glfw.create_window(W, H, "Polygon", None, None)
+    mode = glfw.get_video_mode(monitor)
+    glfw.window_hint(glfw.RED_BITS, mode.bits.red)
+    glfw.window_hint(glfw.GREEN_BITS, mode.bits.green)
+    glfw.window_hint(glfw.BLUE_BITS, mode.bits.blue)
+    glfw.window_hint(glfw.REFRESH_RATE, mode.refresh_rate)
+    W, H = mode.size.width, mode.size.height
+    FPS = mode.refresh_rate
+
+
+    Window = glfw.create_window(mode.size.width, mode.size.height, "Polygon", None, None)
+
     if not Window:
         glfw.terminate()
         return
     glfw.set_framebuffer_size_callback(Window, framebuffer_size_callback)
+    width, height = glfw.get_framebuffer_size(Window)
 
+    framebuffer_size_callback(Window, width, height)
 
     glfw.make_context_current(Window)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
