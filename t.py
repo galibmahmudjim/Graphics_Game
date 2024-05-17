@@ -1,6 +1,11 @@
+from cgitb import text
+import glob
 import re
+import time
 import glfw
 from OpenGL.GL import *
+from OpenGL.GLUT import *
+from OpenGL.GLU import *
 import math
 import random
 
@@ -8,6 +13,7 @@ import random
 
 
 #Base
+game_running = False
 colors= [[255,255,255],
 [255,0,0],
 [0,255,0],
@@ -16,6 +22,38 @@ colors= [[255,255,255],
 [0,255,255],
 [255,0,255],
 [127,127,127]]
+
+WHITE= [255, 255, 255]
+RED= [255, 0, 0]
+GREEN= [0, 255, 0]
+BLUE= [0, 0, 255]
+YELLOW= [255, 255, 0]
+CYAN= [0, 255, 255]
+MAGENTA= [255, 0, 255]
+GRAY= [127, 127, 127]
+
+#...................Constants......................
+cursor_x, cursor_y = 0, 0
+text_visible = True
+last_toggle_time = time.time()
+ran = random.randint(0, 7)
+W, H = 1200, 800
+FPS = 60
+paddle_points = [(-W//20,-(H//2)+5),(-W//20,-(H//2)+25),(W//20,-(H//2)+25),(W//20,-(H//2)+5)]
+PointerSize = 1
+T = 3
+TX, TY = 2,2
+tx, ty = TX, TY
+r,x_c,y_c  = 10,0,0
+total_score = 0
+testing_flag = False
+bricks_display_list = []
+bricks_list,bricks_color_list,paddle_points = [],[],[]
+#...................Constants......................
+
+
+
+#...................Line Drawing.....................
 def get_zone(x0, y0, x1, y1):
     dx= x1-x0
     dy= y1-y0
@@ -131,42 +169,148 @@ def draw_circle(r,x_c,y_c):
                 y-=1
             draw_8_way(x,y,x_c,y_c)
     glEnd()
-#...........................
+#...........................Line Drawing.....................
 
 
-#constants
-W, H = 1200, 800
-FPS = 60
-paddle_points = [(-W//20,-(H//2)+5),(-W//20,-(H//2)+25),(W//20,-(H//2)+25),(W//20,-(H//2)+5)]
-PointerSize = 1
-T = 3
-TX, TY = 2,2
-tx, ty = TX, TY
 
-testing_flag = False
 
-def construct_bricks(brick_width=W//20,brick_rows = 5):
-    global W,H,PointerSize
-    row_brick_number = 20
-    brick_height = brick_width//2
-    PointerSize = brick_height
-    bricks_list = []
-    for i in range(brick_rows):
-        row_bricks = []
-        for j in range(row_brick_number):
-            one_brick = []
-            p1_x = -(W//2) + (j)*brick_width + PointerSize/2
-            p1_y = (H//2) - (i)*brick_height - PointerSize/2
-            
-            p2_x = p1_x + PointerSize
-            p2_y = p1_y
-            one_brick.append((p1_x,p1_y))
-            one_brick.append((p2_x,p2_y))
-            row_bricks.append(one_brick)
 
-        bricks_list.append(row_bricks)
-    return bricks_list
+#...................HomePage......................
 
+def get_text_width(text, font=GLUT_STROKE_ROMAN, scale=1, spacing=0):
+    width = 0
+    for ch in text:
+        width += glutStrokeWidth(font, ord(ch)) * scale + spacing
+    return width
+def draw_text(x, y, text, font=GLUT_STROKE_ROMAN, scale=0.3, thickness=5,spacing=10):
+    glPushMatrix()
+    glTranslatef(x, y, 0)
+    glScalef(scale, scale, scale)
+    for dx in range(-thickness, thickness+1):
+        for dy in range(-thickness, thickness+1):
+            if dx != 0 or dy != 0:
+                glPushMatrix()
+                glTranslatef(dx, dy, 0)
+                for ch in text:
+                    glTranslatef(spacing, 0, 0)
+                    glutStrokeCharacter(font, ord(ch))
+                glPopMatrix()
+    glColor3f(1, 1, 1)  # Set text color to white
+
+    glPopMatrix()
+
+def render_homepage(window):
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    global cursor_x, cursor_y, game_running
+
+    text1 = "Welcome to Block Blitz!"
+    text2 = "New Game"
+    text3 = "Continue"
+    text4 = "High Score"
+    text5 = "Help"
+    text7 = "Exit"
+    text6 = "Press SPACE to Start"
+
+    
+    scale = 0.9
+    thickness = 5
+    spacing = 10
+    scaleMenu = 0.5
+    thicknessMenu = 5
+    spacingMenu = 10
+    # Calculate centered positions
+    text1_width = get_text_width(text1, GLUT_STROKE_ROMAN, scale, spacing)
+    text2_width = get_text_width(text2, GLUT_STROKE_ROMAN, scaleMenu, spacingMenu)
+    text3_width = get_text_width(text3, GLUT_STROKE_ROMAN, scaleMenu, spacingMenu)
+    text4_width = get_text_width(text4, GLUT_STROKE_ROMAN, scaleMenu, spacingMenu)
+    text5_width = get_text_width(text5, GLUT_STROKE_ROMAN, scaleMenu, spacingMenu)
+    text7_width = get_text_width(text7, GLUT_STROKE_ROMAN, scaleMenu, spacingMenu)
+    text6_width = get_text_width(text6, GLUT_STROKE_ROMAN, 0.25, spacingMenu)
+    H_point = 400
+    x1 = -(text1_width/2)+(text1_width/50)*scale
+    x2 = -(text2_width/2)+(text2_width/20)*scaleMenu
+    x3 = -(text3_width/2)+(text3_width/20)*scaleMenu
+    x4 = -(text4_width/2)+(text4_width/20)*scaleMenu
+    x5 = -(text5_width/2)+(text5_width/20)*scaleMenu
+    x6 = -(text6_width/2)+(text5_width/20)*scaleMenu
+    x7 = -(text7_width/2)+(text5_width/20)*scaleMenu
+    y1 = H_point-75
+    y2 = H_point-275
+    y3 = H_point-375
+    y4 = H_point-475
+    y5 = H_point-575
+    y7 = H_point-675
+    y6 = H_point-775 
+    cursorX = cursor_x - W//2
+    cursorY =  H//2 - cursor_y
+    # print(cursorX, cursorY, W, H)
+
+    glColor3f(BLUE[0],BLUE[1],BLUE[2])
+    # print(x2, y2, text2_width, cursor_x, cursor_y, W, H)
+    draw_text(x1, y1, text1, GLUT_STROKE_ROMAN, scale, thickness, spacing)
+
+    if x2 <= cursorX <= x2+text2_width and y2-50 <= cursorY <= y2+50:
+        glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
+        print("New Game")
+        if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
+            reset()
+            game_running = True
+    else:
+        glColor3f(WHITE[0],WHITE[1],WHITE[2])
+    draw_text(x2, y2, text2, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
+    if x3 <= cursorX <= x3+text3_width and y3-50 <= cursorY <= y3+50:
+        glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
+        print("Continue")
+        if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
+            game_running = True
+    else:
+        glColor3f(WHITE[0],WHITE[1],WHITE[2])
+    draw_text(x3, y3, text3, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
+    if x4 <= cursorX <= x4+text4_width and y4-50 <= cursorY <= y4+50:
+        glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
+        print("Help")
+    else:
+        glColor3f(WHITE[0],WHITE[1],WHITE[2])
+    draw_text(x4, y4, text4, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
+    if x5 <= cursorX <= x5+text5_width and y5-50 <= cursorY <= y5+50:
+        glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
+        print("Exit")
+        if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
+            glfw.set_window_should_close(window, True)
+    else:
+        glColor3f(WHITE[0],WHITE[1],WHITE[2])
+    draw_text(x5, y5, text5, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
+
+    if x7 <= cursorX <= x7+text7_width and y7-50 <= cursorY <= y7+50:
+        glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
+        print("Exit")
+        if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
+            glfw.set_window_should_close(window, True)
+    else:
+        glColor3f(WHITE[0],WHITE[1],WHITE[2])
+    draw_text(x7, y7, text7, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
+
+    current_time = time.time()
+    global text_visible, last_toggle_time, ran
+    if current_time - last_toggle_time > 0.5:
+        text_visible = not text_visible
+        last_toggle_time = current_time
+        ran = random.randint(0, 7)
+
+    if text_visible:
+        
+        glColor3f(colors[ran][0], colors[ran][1], colors[ran][2])
+        draw_text(x6, y6, text6, GLUT_STROKE_ROMAN, 0.3, thicknessMenu, spacingMenu)
+
+
+    
+    glfw.swap_buffers(window)
+#...................HomePage......................
+
+
+
+
+#...................Draw Components......................
 def draw_brick(brick_points,color):
     global PointerSize
     start_y = brick_points[0][1]
@@ -196,27 +340,6 @@ def draw_bricks(bricks_list,bricks_color_list,bricks_display_list):
                 color = bricks_color_list[i][j]
                 draw_brick(brick_points,color)
 
-def bricks_color(row,col)->list:
-    color_list = []
-    for i in range(row):
-        temp_list = []
-        for j in range(col):
-            color = (random.randint(100,200),random.randint(100,200),random.randint(100,200))
-            temp_list.append(color)
-        color_list.append(temp_list)
-    return color_list
-
-
-def bricks_display(row,col):
-    display_list = []
-    for i in range(row):
-        temp_list = []
-        for j in range(col):
-            temp_list.append(True)
-        display_list.append(temp_list)
-    return display_list
-
-
 def draw_paddle(paddle_points):
     global testing_flag
     start_y = paddle_points[0][1]
@@ -224,23 +347,26 @@ def draw_paddle(paddle_points):
     
     start_x = paddle_points[0][0]
     end_x = paddle_points[3][0]
-    
-    
     y = start_y
     glBegin(GL_POINTS)
     while y<=end_y:
         zone= get_zone(start_x, y, end_x, y)    
         x0, y0 = allZone_to_3(zone, start_x, y)      
-        x1, y1 = allZone_to_3(zone, end_x, y)      
-
+        x1, y1 = allZone_to_3(zone, end_x, y)     
         glColor3ub(255,0,0)
-
         draw_line_3(x0, y0, x1, y1, zone)
         y+=1
     glEnd()
-    
     if testing_flag:
         testing_flag = False
+#...................Draw Components......................
+
+
+
+
+
+#...................Game Logic......................
+
 
 def move_paddle_right(paddle_points,move_amount=30):
     new_paddle_points = []
@@ -262,7 +388,6 @@ def move_paddle_left(paddle_points,move_amount=30):
         for key,value in enumerate(paddle_points):
             new_paddle_points.append((value[0]+move_amount,value[1]))
     return new_paddle_points
-
 def check_collision(ball_center_x,ball_center_y,ball_radius,paddle_x1,paddle_y1,paddle_x2,paddle_y2):
     closest_x = clamp(ball_center_x, paddle_x1, paddle_x2)
     closest_y = clamp(ball_center_y, paddle_y1, paddle_y2)
@@ -275,7 +400,6 @@ def check_collision(ball_center_x,ball_center_y,ball_radius,paddle_x1,paddle_y1,
         return False
 def clamp(value, min_value, max_value):
     return max(min(value, max_value), min_value)
-
 def adjust_ball_angle(x1, y1, x2, y2, ball_x, ball_y, ball_radius):
     global tx, ty
     paddle_width = x2 - x1
@@ -284,8 +408,6 @@ def adjust_ball_angle(x1, y1, x2, y2, ball_x, ball_y, ball_radius):
     influence = TX
     tx = round(abs(influence * hit_position) * math.copysign(1, tx) )
     ty = round(abs(TY))  
-
-
 def check_brick_collision(circle_x, circle_y, circle_radius, rect_x1, rect_y1, rect_x2, rect_y2):
     closest_x = max(rect_x1, min(circle_x, rect_x2))
     closest_y = max(rect_y1, min(circle_y, rect_y2))
@@ -294,22 +416,12 @@ def check_brick_collision(circle_x, circle_y, circle_radius, rect_x1, rect_y1, r
     distance_squared = distance_x**2 + distance_y**2
     distance_rectangle = math.sqrt((rect_x2-rect_x1)**2 + (rect_y2-rect_y1)**2)/2.0 + circle_radius
     distance_from_rectengle_center = math.sqrt(((rect_x1+rect_x2)/2.0 - circle_x)**2 + ((rect_y1+rect_y2)/2.0 - circle_y)**2)
-
     distance = math.sqrt(distance_squared) - circle_radius
-
-    
     if distance_from_rectengle_center<=distance_rectangle and (distance_from_rectengle_center) >=(distance_rectangle-5):
             
             return False
     elif distance<=0:
-            print(tx,ty)
-            print(distance_from_rectengle_center,distance_rectangle)
             return True
-
-
-
-
-
 def update_ball_position(brick_points,ball_center,ball_radius):
     global tx,ty, TX, TY
     p1,p2 = brick_points
@@ -321,20 +433,15 @@ def update_ball_position(brick_points,ball_center,ball_radius):
         closest_x = max(rect_x1, min(circle_x, rect_x2))
         closest_y = max(rect_y1, min(circle_y, rect_y2))
         if closest_y == rect_y1:
-            print("top")
             ty = abs(ty)*-1
         elif closest_y == rect_y2:
-            print("bottom")
             ty = abs(ty)*1
         if closest_x == rect_x1:
-            print("left")
             tx = abs(tx) * -1
         elif closest_x == rect_x2:
-            print("right")
             tx = abs(tx)*1
         return True
     return False
-
 def check_bricks_collision(bricks_list,bricks_display_list,ball_center_x,ball_center_y,ball_radius):
     for i in range(len(bricks_list)-1,-1,-1):
         for j in range(len(bricks_list[i])):
@@ -344,33 +451,106 @@ def check_bricks_collision(bricks_list,bricks_display_list,ball_center_x,ball_ce
                     bricks_display_list[i][j] = False
                     return True
     return False
+#...................Game Logic.....................
 
+
+
+
+#...................Bricks......................
+def construct_bricks(brick_width=W//20,brick_rows = 5):
+    global W,H,PointerSize
+    row_brick_number = 20
+    brick_height = brick_width//2
+    PointerSize = brick_height
+    bricks_list = []
+    for i in range(brick_rows):
+        row_bricks = []
+        for j in range(row_brick_number):
+            one_brick = []
+            p1_x = -(W//2) + (j)*brick_width + PointerSize/2
+            p1_y = (H//2) - (i)*brick_height - PointerSize/2
+            
+            p2_x = p1_x + PointerSize
+            p2_y = p1_y
+            one_brick.append((p1_x,p1_y))
+            one_brick.append((p2_x,p2_y))
+            row_bricks.append(one_brick)
+
+        bricks_list.append(row_bricks)
+    return bricks_list
+
+def bricks_color(row,col)->list:
+    color_list = []
+    for i in range(row):
+        temp_list = []
+        for j in range(col):
+            color = (random.randint(100,200),random.randint(100,200),random.randint(100,200))
+            temp_list.append(color)
+        color_list.append(temp_list)
+    return color_list
+
+def bricks_display(row,col):
+    display_list = []
+    for i in range(row):
+        temp_list = []
+        for j in range(col):
+            temp_list.append(True)
+        display_list.append(temp_list)
+    return display_list
+#...................Bricks......................
+
+
+
+#...................Callbacks......................
 def key_callback(window, key, scancode, action, mods):
-    global paddle_points,testing_flag
+    global paddle_points, testing_flag, game_running
     if action == glfw.REPEAT or action == glfw.PRESS:
         if key == glfw.KEY_RIGHT:
             testing_flag = True
             paddle_points = move_paddle_right(paddle_points)
-        elif key==glfw.KEY_LEFT:
+        elif key == glfw.KEY_LEFT:
             testing_flag = True
             paddle_points = move_paddle_left(paddle_points)
+        elif key == glfw.KEY_SPACE and not game_running:
+            game_running = True  
         elif key == glfw.KEY_ESCAPE and action == glfw.PRESS:
-            glfw.set_window_should_close(window,True)
-
-
-
+            print("Pressed ESCAPE")
+            if game_running==False:
+                glfw.set_window_should_close(window, True)
+            else:
+                game_running = False
+def cursor_position_callback(window, xpos, ypos):
+    global cursor_x, cursor_y
+    cursor_x, cursor_y = xpos, ypos
 def framebuffer_size_callback(window, width, height):
     global W, H, paddle_points,bricks_list,bricks_color_list,bricks_display_list
     W, H = width, height
+    print(W, H)
     initialize()
     glViewport(0, 0, W, H)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     glOrtho(-W/2, W/2-1, -H/2, H/2-1, -1,1)
+#...................Callbacks......................
 
 
-bricks_display_list = bricks_display(5,20)
-bricks_list,bricks_color_list,paddle_points = [],[],[]
+
+
+
+#...................Reset/Initialize......................
+def reset():
+    global bricks_list,bricks_color_list,bricks_display_list,paddle_points, tx, ty, TX, TY, x_c, y_c, r
+    x_c, y_c = 0, 0
+    bricks_list = construct_bricks(brick_rows=5, brick_width=W//20)
+    bricks_color_list = bricks_color(5,20)
+    bricks_display_list = bricks_display(5,20)
+    paddle_points = [(-W//20,-(H//2)+5),(-W//20,-(H//2)+25),(W//20,-(H//2)+25),(W//20,-(H//2)+5)]
+    tx, ty = abs(TX), abs(TY)
+    global total_score
+    total_score = 0
+    for i in range(len(bricks_display_list)):
+        for j in range(len(bricks_display_list[i])):
+            bricks_display_list[i][j] = True
 def initialize():
     global bricks_list,bricks_color_list,bricks_display_list,paddle_points, tx, ty, TX, TY
     bricks_list = construct_bricks(brick_rows=5, brick_width=W//20)
@@ -380,19 +560,16 @@ def initialize():
     seconds_to_travel = T
     frames_to_travel = seconds_to_travel * frame_rate
     ty = round(H // frames_to_travel * math.copysign(1, ty))
-    tx = round(ty * math.copysign(1, tx))
+    tx = round(abs(ty) * math.copysign(1, tx))
     TX, TY = tx, ty
+#...................Reset/Initialize......................
+
 
 def myEvent(Window):
-            
-        r,x_c,y_c  = 10,0,0
-        
-        global tx,ty
-        
-        total_score = 0
+        global tx,ty,game_running, r, x_c, y_c, paddle_points, bricks_list,bricks_color_list,bricks_display_list, total_score
         initialize()
         x=0
-        while not glfw.window_should_close(Window):     
+        while game_running:    
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
                 
             glfw.poll_events()
@@ -413,19 +590,16 @@ def myEvent(Window):
                 ty *= -1
             if (y_c-r)<(-H/2):
                 ty *= -1
-                print()
-                print("Game Over")
-                print(f"Your total score is = {total_score}")
-                print()
+                # print()
+                # print("Game Over")
+                # print(f"Your total score is = {total_score}")
+                # print()
                 # break
             if check_bricks_collision(bricks_list,bricks_display_list,x_c,y_c,r):
                 total_score += 1
-                print()
-                print(f"Current Score = {total_score}")
-                print()
-
-
-
+                # print()
+                # print(f"Current Score = {total_score}")
+                # print()
             glfw.swap_buffers(Window)
             glfw.poll_events()
         
@@ -434,7 +608,7 @@ def myEvent(Window):
 
 
 def main():
-    global W,H,FPS
+    global W, H, FPS, game_running
     if not glfw.init():
         return
     
@@ -444,37 +618,41 @@ def main():
     glfw.window_hint(glfw.GREEN_BITS, mode.bits.green)
     glfw.window_hint(glfw.BLUE_BITS, mode.bits.blue)
     glfw.window_hint(glfw.REFRESH_RATE, mode.refresh_rate)
+    # glfw.window_hint(glfw.RESIZABLE, GL_FALSE)
     W, H = mode.size.width, mode.size.height
+    print(W, H)
     FPS = mode.refresh_rate
+    initialize()
+    reset()
 
-
-    Window = glfw.create_window(mode.size.width, mode.size.height, "Polygon", None, None)
+    Window = glfw.create_window(W,H, "Polygon", None, None)
 
     if not Window:
         glfw.terminate()
         return
+
     glfw.set_framebuffer_size_callback(Window, framebuffer_size_callback)
     width, height = glfw.get_framebuffer_size(Window)
-
-    framebuffer_size_callback(Window, width, height)
+    framebuffer_size_callback(Window, W, H)
 
     glfw.make_context_current(Window)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    glOrtho(-W/2, W/2-1, -H/2, H/2-1, -1,1)
-    glfw.set_key_callback(Window,key_callback)
-
+    glOrtho(-W/2, W/2-1, -H/2, H/2-1, -1, 1)
+    glfw.set_key_callback(Window, key_callback)
+    glfw.set_cursor_pos_callback(Window, cursor_position_callback)
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
 
-    myEvent(Window)
-    glfw.swap_buffers(Window)
-    glfw.poll_events()
-
-
-    
+    while not glfw.window_should_close(Window):
+        if game_running:
+            myEvent(Window)
+        else:
+            render_homepage(window=Window)
+        glfw.poll_events()
 
     glfw.terminate()
+
 
 main()
