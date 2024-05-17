@@ -209,15 +209,15 @@ def render_homepage(window):
     text4 = "High Score"
     text5 = "Help"
     text7 = "Exit"
-    text6 = "Press SPACE to Start"
+    text6 = "Press SPACE to Start and Escape to Return Menu"
 
     
-    scale = 0.9
+    scale = 0.7
     thickness = 5
     spacing = 10
-    scaleMenu = 0.5
+    scaleMenu = 0.4
     thicknessMenu = 5
-    spacingMenu = 10
+    spacingMenu = 7
     # Calculate centered positions
     text1_width = get_text_width(text1, GLUT_STROKE_ROMAN, scale, spacing)
     text2_width = get_text_width(text2, GLUT_STROKE_ROMAN, scaleMenu, spacingMenu)
@@ -225,7 +225,7 @@ def render_homepage(window):
     text4_width = get_text_width(text4, GLUT_STROKE_ROMAN, scaleMenu, spacingMenu)
     text5_width = get_text_width(text5, GLUT_STROKE_ROMAN, scaleMenu, spacingMenu)
     text7_width = get_text_width(text7, GLUT_STROKE_ROMAN, scaleMenu, spacingMenu)
-    text6_width = get_text_width(text6, GLUT_STROKE_ROMAN, 0.25, spacingMenu)
+    text6_width = get_text_width(text6, GLUT_STROKE_ROMAN, 0.22, spacingMenu)
     H_point = 400
     x1 = -(text1_width/2)+(text1_width/50)*scale
     x2 = -(text2_width/2)+(text2_width/20)*scaleMenu
@@ -234,7 +234,7 @@ def render_homepage(window):
     x5 = -(text5_width/2)+(text5_width/20)*scaleMenu
     x6 = -(text6_width/2)+(text5_width/20)*scaleMenu
     x7 = -(text7_width/2)+(text5_width/20)*scaleMenu
-    y1 = H_point-75
+    y1 = H_point-175
     y2 = H_point-275
     y3 = H_point-375
     y4 = H_point-475
@@ -268,15 +268,13 @@ def render_homepage(window):
     draw_text(x3, y3, text3, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
     if x4 <= cursorX <= x4+text4_width and y4-50 <= cursorY <= y4+50:
         glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
-        print("Help")
+    
     else:
         glColor3f(WHITE[0],WHITE[1],WHITE[2])
     draw_text(x4, y4, text4, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
     if x5 <= cursorX <= x5+text5_width and y5-50 <= cursorY <= y5+50:
         glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
-        print("Exit")
-        if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
-            glfw.set_window_should_close(window, True)
+        print("Help")
     else:
         glColor3f(WHITE[0],WHITE[1],WHITE[2])
     draw_text(x5, y5, text5, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
@@ -292,7 +290,7 @@ def render_homepage(window):
 
     current_time = time.time()
     global text_visible, last_toggle_time, ran
-    if current_time - last_toggle_time > 0.5:
+    if current_time - last_toggle_time > 1:
         text_visible = not text_visible
         last_toggle_time = current_time
         ran = random.randint(0, 7)
