@@ -13,6 +13,7 @@ with respective directions. Other key functionalities are in the help section.
 
 """
 
+
 from cgitb import text
 import glob
 import re
@@ -28,11 +29,11 @@ import random
 
 
 
-
 #Base
+
+
 #Variable for checking whether to render homepage or game
 game_running = False
-
 
 
 #Color codes for the game
@@ -55,10 +56,9 @@ MAGENTA= [255, 0, 255]
 GRAY= [127, 127, 127]
 
 
-
-
 #Bitmap codes for rendering text
 #..............Font..........
+
 font = {
     'A': [
         0b10001,
@@ -306,22 +306,22 @@ font = {
         0b01110,
     ],
     '1': [
-        0b11111,
-        0b00100,
-        0b00100,
-        0b00100,
         0b00100,
         0b01100,
         0b00100,
+        0b00100,
+        0b00100,
+        0b00100,
+        0b11111,
     ],
     '2': [
-        0b11111,
-        0b10000,
-        0b01000,
-        0b00110,
-        0b00001,
-        0b10001,
         0b01110,
+        0b10001,
+        0b00001,
+        0b00110,
+        0b01000,
+        0b10000,
+        0b11111,
     ],
     '3': [
         0b11110,
@@ -334,39 +334,39 @@ font = {
     ],
     '4': [
         0b00010,
-        0b00010,
-        0b11111,
-        0b10010,
-        0b01010,
         0b00110,
+        0b01010,
+        0b10010,
+        0b11111,
+        0b00010,
         0b00010,
     ],
     '5': [
-        0b01110,
-        0b10001,
-        0b00001,
-        0b00001,
-        0b11110,
-        0b10000,
         0b11111,
+        0b10000,
+        0b11110,
+        0b00001,
+        0b00001,
+        0b10001,
+        0b01110,
     ],
     '6': [
         0b01110,
-        0b10001,
-        0b10001,
-        0b10001,
-        0b11110,
         0b10000,
+        0b11110,
+        0b10001,
+        0b10001,
+        0b10001,
         0b01110,
     ],
     '7': [
-        0b01000,
-        0b01000,
-        0b01000,
-        0b00100,
-        0b00010,
-        0b00001,
         0b11111,
+        0b00001,
+        0b00010,
+        0b00100,
+        0b01000,
+        0b01000,
+        0b01000,
     ],
     '8': [
         0b01110,
@@ -380,9 +380,9 @@ font = {
     '9': [
         0b01110,
         0b10001,
-        0b00001,
-        0b01111,
         0b10001,
+        0b01111,
+        0b00001,
         0b10001,
         0b01110,
     ],
@@ -438,8 +438,7 @@ font = {
 #Gets the bitmap character for a font
 def get_char_bitmap(char):
     fontbits = font.get(char.upper(), [0] * 7)
-    # fontbits.reverse()  # Reverse the list in-place
-    return fontbits  # Return the reversed list
+    return fontbits
 
 
 # Function for rending text using bitmap
@@ -462,9 +461,7 @@ def render_text(x, y, height, pointSize, text):
 
     glEnd() 
         
-        
 #...................Constants and Global Variables......................
-high_scoreFlag = False
 cursor_x, cursor_y = 0, 0
 text_visible = True
 last_toggle_time = time.time()
@@ -510,10 +507,10 @@ def get_zone(x0, y0, x1, y1):
         if abs(dx)>abs(dy):
             return 4
         return 5
-    
-    
+
+
 #Convert back to respective zones from zone 3
-def return_back(zone, x, y): 
+def return_back(zone, x, y):
     if zone == 0:
         return -x, y
     elif zone == 1:
@@ -530,10 +527,11 @@ def return_back(zone, x, y):
         return y, x 
     else:
         return -x, -y
-    
-    
+
+
+
 #Convert all points to zone3 for bresenhams line drawing algorithm
-def allZone_to_3(zone, x, y): 
+def allZone_to_3(zone, x, y):
     if zone == 0:
         return -x, y
     elif zone == 1:
@@ -556,12 +554,11 @@ def allZone_to_3(zone, x, y):
 def draw_pixel(x, y, zone):
     x, y = return_back(zone, x, y)
     glVertex2f(x, y)
-
+    
+    
 def draw_pixel_2(x,y):
     glVertex2f(x, y)
-
-
-
+    
 
 #Bresenhams line drawing algorithm, we used zone 3    
 #We used this algorithm for drawing the paddle and bricks
@@ -583,9 +580,9 @@ def draw_line_3(x0, y0, x1, y1, zone):
             d += del_w
             x -= 1
         draw_pixel(x, y, zone)
-
-
-
+        
+        
+        
 def draw_8_way(x,y,x_c,y_c):
    glColor3ub(255,255,255)
    glVertex2i(x_c+x,y_c+y)
@@ -596,7 +593,6 @@ def draw_8_way(x,y,x_c,y_c):
    glVertex2i(x_c-y,y_c+x)
    glVertex2i(x_c+y,y_c-x)
    glVertex2i(x_c-y,y_c-x)
-
 
 
 #Circle drawing algorithm
@@ -626,6 +622,9 @@ def draw_circle(r,x_c,y_c):
 
 
 #...................HomePage......................
+
+
+
 #Function for rendering homepage actions
 def render_homepage(window):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -673,13 +672,16 @@ def render_homepage(window):
     y6 = H_point-775 
     cursorX = cursor_x - W//2
     cursorY =  H//2 - cursor_y
+    # print(cursorX, cursorY, W, H)
 
     glColor3f(BLUE[0],BLUE[1],BLUE[2])
+    # print(x2, y2, text2_width, cursor_x, cursor_y, W, H)
     render_text(x1, y1, 50, 5, text1)
 
 
     if x2 <= cursorX <= x2+text2_width and y2-50 <= cursorY <= y2+50:
         glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
+        print("New Game")
         if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
             reset()
             game_running = True
@@ -688,31 +690,36 @@ def render_homepage(window):
     render_text(x2, y2, 50, 5, text2)
     if x3 <= cursorX <= x3+text3_width and y3-50 <= cursorY <= y3+50:
         glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
+        print("Continue")
         if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
             game_running = True
     else:
         glColor3f(WHITE[0],WHITE[1],WHITE[2])
+    # #draw_text(x3, y3, text3, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
     render_text(x3, y3, 50, 5, text3)
     if x4 <= cursorX <= x4+text4_width and y4-50 <= cursorY <= y4+50:
         glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
-        if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
-            high_scoreFlag = True
     
     else:
         glColor3f(WHITE[0],WHITE[1],WHITE[2])
+    # #draw_text(x4, y4, text4, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
     render_text(x4, y4, 50, 5, text4)
     if x5 <= cursorX <= x5+text5_width and y5-50 <= cursorY <= y5+50:
         glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
+        print("Help")
     else:
         glColor3f(WHITE[0],WHITE[1],WHITE[2])
+    #draw_text(x5, y5, text5, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
     render_text(x5, y5, 50, 5, text5)
 
     if x7 <= cursorX <= x7+text7_width and y7-50 <= cursorY <= y7+50:
         glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
+        print("Exit")
         if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
             glfw.set_window_should_close(window, True)
     else:
         glColor3f(WHITE[0],WHITE[1],WHITE[2])
+    #draw_text(x7, y7, text7, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
     render_text(x7, y7, 50, 5, text7)
     current_time = time.time()
     global text_visible, last_toggle_time, ran
@@ -724,6 +731,7 @@ def render_homepage(window):
     if text_visible:
         
         glColor3f(colors[ran][0], colors[ran][1], colors[ran][2])
+        #draw_text(x6, y6, text6, GLUT_STROKE_ROMAN, 0.3, thicknessMenu, spacingMenu)
         render_text(x6, y6, 50, 5, text6)
         render_text(x6+30, y6-80, 50, 5, text8)
 
@@ -732,37 +740,11 @@ def render_homepage(window):
     glfw.swap_buffers(window)
 #...................HomePage......................
 
-#...................Guide......................
-
-
-def render_Guide(window):
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    global cursor_x, cursor_y, game_running
-
-    text1 = "Help"
-    text2 = "1. Use LEFT and RIGHT arrow keys to move the paddle"
-    text3 = "2. Press SPACE to start the game"
-    text4 = "3. Break the bricks using the ball"
-    text5 = "4. Don't let the ball fall down"
-    text6 = "5. Break all the bricks to win"
-    text7 = "6. Press ESC to exit"
-
-    render_text(-100, 300, 50, 5, text1)
-    render_text(-500, 200, 50, 5, text2)
-    render_text(-500, 100, 50, 5, text3)
-    render_text(-500, 0, 50, 5, text4)
-    render_text(-500, -100, 50, 5, text5)
-    render_text(-500, -200, 50, 5, text6)
-    render_text(-500, -300, 50, 5, text7)
-
-
-
-    
-    glfw.swap_buffers(window)
 
 
 
 #...................Draw Components......................
+#Function for drawing a single brick
 def draw_brick(brick_points,color):
     global PointerSize
     start_y = brick_points[0][1]
@@ -784,6 +766,7 @@ def draw_brick(brick_points,color):
     glEnd()
     glPointSize(1)
 
+#function for drawing bricks set
 def draw_bricks(bricks_list,bricks_color_list,bricks_display_list):
     for i in range(len(bricks_list)):
         for j in range(len(bricks_list[i])):
@@ -792,6 +775,8 @@ def draw_bricks(bricks_list,bricks_color_list,bricks_display_list):
                 color = bricks_color_list[i][j]
                 draw_brick(brick_points,color)
 
+
+#Function to draw the paddle
 def draw_paddle(paddle_points):
     global testing_flag
     start_y = paddle_points[0][1]
@@ -819,7 +804,7 @@ def draw_paddle(paddle_points):
 
 #...................Game Logic......................
 
-
+#Callback function for right arrow key
 def move_paddle_right(paddle_points,move_amount=30):
     new_paddle_points = []
     if paddle_points[3][0]+move_amount<=(W//2)-1:
@@ -830,6 +815,9 @@ def move_paddle_right(paddle_points,move_amount=30):
         for key,value in enumerate(paddle_points):
             new_paddle_points.append((value[0]+move_amount,value[1]))
     return new_paddle_points        
+
+
+#callback function for left arrrow key
 def move_paddle_left(paddle_points,move_amount=30):
     new_paddle_points = []
     if paddle_points[0][0] - move_amount>= -(W//2):
@@ -840,6 +828,9 @@ def move_paddle_left(paddle_points,move_amount=30):
         for key,value in enumerate(paddle_points):
             new_paddle_points.append((value[0]+move_amount,value[1]))
     return new_paddle_points
+
+
+#Functions for checking collision between ball and paddle
 def check_collision(ball_center_x,ball_center_y,ball_radius,paddle_x1,paddle_y1,paddle_x2,paddle_y2):
     closest_x = clamp(ball_center_x, paddle_x1, paddle_x2)
     closest_y = clamp(ball_center_y, paddle_y1, paddle_y2)
@@ -853,8 +844,7 @@ def check_collision(ball_center_x,ball_center_y,ball_radius,paddle_x1,paddle_y1,
 def clamp(value, min_value, max_value):
     return max(min(value, max_value), min_value)
 
-
-
+#Function for adjusting the ball angle after hitting different parts of the paddle
 def adjust_ball_angle(x1, y1, x2, y2, ball_x, ball_y, ball_radius):
     global tx, ty
     paddle_width = x2 - x1
@@ -865,7 +855,7 @@ def adjust_ball_angle(x1, y1, x2, y2, ball_x, ball_y, ball_radius):
     ty = round(abs(TY))  
 
 
-
+#Function to check collision with ball and brick
 def check_brick_collision(circle_x, circle_y, circle_radius, rect_x1, rect_y1, rect_x2, rect_y2):
     closest_x = max(rect_x1, min(circle_x, rect_x2))
     closest_y = max(rect_y1, min(circle_y, rect_y2))
@@ -880,6 +870,8 @@ def check_brick_collision(circle_x, circle_y, circle_radius, rect_x1, rect_y1, r
             return False
     elif distance<=0:
             return True
+
+#Function to update ball position for every screen
 def update_ball_position(brick_points,ball_center,ball_radius):
     global tx,ty, TX, TY
     p1,p2 = brick_points
@@ -900,6 +892,8 @@ def update_ball_position(brick_points,ball_center,ball_radius):
             tx = abs(tx)*1
         return True
     return False
+
+#Function to check which brick the ball collide and display respectively
 def check_bricks_collision(bricks_list,bricks_display_list,ball_center_x,ball_center_y,ball_radius):
     for i in range(len(bricks_list)-1,-1,-1):
         for j in range(len(bricks_list[i])):
@@ -918,6 +912,7 @@ def check_bricks_collision(bricks_list,bricks_display_list,ball_center_x,ball_ce
 
 
 #...................Bricks......................
+#Function for constructing brick points
 def construct_bricks(brick_width=W//20,brick_rows = 5):
     global W,H,PointerSize
     row_brick_number = 20
@@ -940,6 +935,8 @@ def construct_bricks(brick_width=W//20,brick_rows = 5):
         bricks_list.append(row_bricks)
     return bricks_list
 
+
+#Constructing list for different bricks with different colors
 def bricks_color(row,col)->list:
     color_list = []
     for i in range(row):
@@ -950,6 +947,8 @@ def bricks_color(row,col)->list:
         color_list.append(temp_list)
     return color_list
 
+
+#Constructing boolean list for checking which bricks are available 
 def bricks_display(row,col):
     display_list = []
     for i in range(row):
@@ -963,9 +962,8 @@ def bricks_display(row,col):
 
 
 #...................Callbacks......................
-Guide = False
 def key_callback(window, key, scancode, action, mods):
-    global paddle_points, testing_flag, game_running, high_scoreFlag, Guide
+    global paddle_points, testing_flag, game_running
     if action == glfw.REPEAT or action == glfw.PRESS:
         if key == glfw.KEY_RIGHT:
             testing_flag = True
@@ -976,27 +974,22 @@ def key_callback(window, key, scancode, action, mods):
         elif key == glfw.KEY_SPACE and not game_running:
             game_running = True  
         elif key == glfw.KEY_ESCAPE and action == glfw.PRESS:
-            print("Pressed ESCAPE")
-            if Guide:
-                Guide = False
-            if high_scoreFlag:
-                high_scoreFlag = False
             if game_running==False:
                 glfw.set_window_should_close(window, True)
             else:
+
+
                 game_running = False
+
 def cursor_position_callback(window, xpos, ypos):
     global cursor_x, cursor_y
     cursor_x, cursor_y = xpos, ypos
+
+
 def framebuffer_size_callback(window, width, height):
     global W, H, paddle_points,bricks_list,bricks_color_list,bricks_display_list
     W, H = width, height
-    print(W, H)
     initialize()
-    # glViewport(0, 0, W, H)
-    # glMatrixMode(GL_PROJECTION)
-    # glLoadIdentity()
-    # glOrtho(-W/2, W/2-1, -H/2, H/2-1, -1,1)
 #...................Callbacks......................
 
 
@@ -1017,6 +1010,7 @@ def reset():
     for i in range(len(bricks_display_list)):
         for j in range(len(bricks_display_list[i])):
             bricks_display_list[i][j] = True
+
 def initialize():
     global bricks_list,bricks_color_list,bricks_display_list,paddle_points, tx, ty, TX, TY
     bricks_list = construct_bricks(brick_rows=5, brick_width=W//20)
@@ -1031,27 +1025,20 @@ def initialize():
 #...................Reset/Initialize......................
 
 #...................Render High Score......................
-def render_high_score(window):
-    global high_score , high_scoreFlag
+def render_high_score():
+    global high_score
     if os.path.isfile("high_score.txt"):
             file = open("high_score.txt", "r")
             high_score = file.readline()
     else:
-            high_score = '0'
-    # file.close()
-    while True:
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-                
-        glfw.poll_events()
-        render_text(-300,0,50, 5, text="Hight Score "+str(high_score))
-        glfw.swap_buffers(window)
-        glfw.poll_events()
-        if high_scoreFlag == False:
-            break
-
-
+            print("File does not exist")
+    file.close()
+    
 #...................Render High Score......................
 
+
+
+#Event Loop for rendering the gameplay
 def myEvent(Window):
         global tx,ty,game_running, r, x_c, y_c, paddle_points, bricks_list,bricks_color_list,bricks_display_list, total_score
         initialize()
@@ -1137,8 +1124,6 @@ def main():
     while not glfw.window_should_close(Window):
         if game_running:
             myEvent(Window)
-        elif Guide:
-            render_Guide(window=Window)
         else:
             render_homepage(window=Window)
         glfw.poll_events()
