@@ -49,6 +49,7 @@ total_score = 0
 testing_flag = False
 bricks_display_list = []
 bricks_list,bricks_color_list,paddle_points = [],[],[]
+high_score = 0
 #...................Constants......................
 
 
@@ -562,6 +563,18 @@ def initialize():
     TX, TY = tx, ty
 #...................Reset/Initialize......................
 
+#...................Render High Score......................
+def render_high_score():
+    global high_score
+    if os.path.isfile("high_score.txt"):
+            file = open("high_score.txt", "r")
+            high_score = file.readline()
+    else:
+            print("File does not exist")
+    file.close()
+    draw_text(-W//2+10, H//2-50, f"High Score = {high_score}", GLUT_STROKE_ROMAN, 0.3, 5, 10)
+    
+#...................Render High Score......................
 
 def myEvent(Window):
         global tx,ty,game_running, r, x_c, y_c, paddle_points, bricks_list,bricks_color_list,bricks_display_list, total_score
@@ -588,16 +601,17 @@ def myEvent(Window):
                 ty *= -1
             if (y_c-r)<(-H/2):
                 ty *= -1
-                # print()
-                # print("Game Over")
-                # print(f"Your total score is = {total_score}")
-                # print()
-                # break
+                print()
+                print("Game Over")
+                print(f"Your total score is = {total_score}")
+                print()
+                game_running = False
+                break
             if check_bricks_collision(bricks_list,bricks_display_list,x_c,y_c,r):
                 total_score += 1
-                # print()
-                # print(f"Current Score = {total_score}")
-                # print()
+                print()
+                print(f"Current Score = {total_score}")
+                print()
             glfw.swap_buffers(Window)
             glfw.poll_events()
         
@@ -629,9 +643,9 @@ def main():
         glfw.terminate()
         return
 
-    glfw.set_framebuffer_size_callback(Window, framebuffer_size_callback)
-    width, height = glfw.get_framebuffer_size(Window)
-    framebuffer_size_callback(Window, W, H)
+    # glfw.set_framebuffer_size_callback(Window, framebuffer_size_callback)
+    # width, height = glfw.get_framebuffer_size(Window)
+    # framebuffer_size_callback(Window, W, H)
 
     glfw.make_context_current(Window)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
