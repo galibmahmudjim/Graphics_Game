@@ -447,7 +447,10 @@ def check_bricks_collision(bricks_list,bricks_display_list,ball_center_x,ball_ce
             if bricks_display_list[i][j]:
                 brick_points = bricks_list[i][j]
                 if update_ball_position(brick_points,(ball_center_x,ball_center_y),ball_radius):        
-                    bricks_display_list[i][j] = False
+                    if i!=len(bricks_list)-1 and bricks_display_list[i+1][j]:
+                        bricks_display_list[i+1][j] = False
+                    else:
+                        bricks_display_list[i][j] = False
                     return True
     return False
 #...................Game Logic.....................
@@ -467,7 +470,7 @@ def construct_bricks(brick_width=W//20,brick_rows = 5):
         for j in range(row_brick_number):
             one_brick = []
             p1_x = -(W//2) + (j)*brick_width + PointerSize/2
-            p1_y = (H//2) - (i)*brick_height - PointerSize/2
+            p1_y = (H//2) - (i)*brick_height - PointerSize/2 - 40
             
             p2_x = p1_x + PointerSize
             p2_y = p1_y
@@ -597,7 +600,7 @@ def myEvent(Window):
                 tx *= -1
             if (x_c-r)<(-W/2):
                 tx *= -1
-            if (y_c+r)>(H/2-1):
+            if (y_c+r+40)>(H/2-1):
                 ty *= -1
             if (y_c-r)<(-H/2):
                 ty *= -1
