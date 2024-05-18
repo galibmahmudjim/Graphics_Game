@@ -282,22 +282,22 @@ font = {
         0b01110,
     ],
     '1': [
+        0b11111,
+        0b00100,
+        0b00100,
+        0b00100,
         0b00100,
         0b01100,
         0b00100,
-        0b00100,
-        0b00100,
-        0b00100,
-        0b11111,
     ],
     '2': [
-        0b01110,
-        0b10001,
-        0b00001,
-        0b00110,
-        0b01000,
-        0b10000,
         0b11111,
+        0b10000,
+        0b01000,
+        0b00110,
+        0b00001,
+        0b10001,
+        0b01110,
     ],
     '3': [
         0b11110,
@@ -310,39 +310,39 @@ font = {
     ],
     '4': [
         0b00010,
-        0b00110,
-        0b01010,
-        0b10010,
-        0b11111,
         0b00010,
+        0b11111,
+        0b10010,
+        0b01010,
+        0b00110,
         0b00010,
     ],
     '5': [
-        0b11111,
-        0b10000,
-        0b11110,
-        0b00001,
-        0b00001,
-        0b10001,
         0b01110,
+        0b10001,
+        0b00001,
+        0b00001,
+        0b11110,
+        0b10000,
+        0b11111,
     ],
     '6': [
         0b01110,
-        0b10000,
+        0b10001,
+        0b10001,
+        0b10001,
         0b11110,
-        0b10001,
-        0b10001,
-        0b10001,
+        0b10000,
         0b01110,
     ],
     '7': [
-        0b11111,
-        0b00001,
-        0b00010,
+        0b01000,
+        0b01000,
+        0b01000,
         0b00100,
-        0b01000,
-        0b01000,
-        0b01000,
+        0b00010,
+        0b00001,
+        0b11111,
     ],
     '8': [
         0b01110,
@@ -356,9 +356,9 @@ font = {
     '9': [
         0b01110,
         0b10001,
-        0b10001,
-        0b01111,
         0b00001,
+        0b01111,
+        0b10001,
         0b10001,
         0b01110,
     ],
@@ -437,6 +437,7 @@ def render_text(x, y, height, pointSize, text):
     glEnd() 
         
 #...................Constants......................
+high_scoreFlag = False
 cursor_x, cursor_y = 0, 0
 text_visible = True
 last_toggle_time = time.time()
@@ -658,6 +659,10 @@ def render_homepage(window):
     render_text(x3, y3, 50, 5, text3)
     if x4 <= cursorX <= x4+text4_width and y4-50 <= cursorY <= y4+50:
         glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
+        if glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS:
+            print("High Score")
+            high_scoreFlag = True
+            # render_high_score(window=window)
     
     else:
         glColor3f(WHITE[0],WHITE[1],WHITE[2])
@@ -699,6 +704,33 @@ def render_homepage(window):
     glfw.swap_buffers(window)
 #...................HomePage......................
 
+#...................Guide......................
+
+
+def render_Guide(window):
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    global cursor_x, cursor_y, game_running
+
+    text1 = "Help"
+    text2 = "1. Use LEFT and RIGHT arrow keys to move the paddle"
+    text3 = "2. Press SPACE to start the game"
+    text4 = "3. Break the bricks using the ball"
+    text5 = "4. Don't let the ball fall down"
+    text6 = "5. Break all the bricks to win"
+    text7 = "6. Press ESC to exit"
+
+    render_text(-100, 300, 50, 5, text1)
+    render_text(-500, 200, 50, 5, text2)
+    render_text(-500, 100, 50, 5, text3)
+    render_text(-500, 0, 50, 5, text4)
+    render_text(-500, -100, 50, 5, text5)
+    render_text(-500, -200, 50, 5, text6)
+    render_text(-500, -300, 50, 5, text7)
+
+
+
+    
+    glfw.swap_buffers(window)
 
 
 
@@ -897,8 +929,9 @@ def bricks_display(row,col):
 
 
 #...................Callbacks......................
+Guide = False
 def key_callback(window, key, scancode, action, mods):
-    global paddle_points, testing_flag, game_running
+    global paddle_points, testing_flag, game_running, high_scoreFlag, Guide
     if action == glfw.REPEAT or action == glfw.PRESS:
         if key == glfw.KEY_RIGHT:
             testing_flag = True
@@ -910,6 +943,10 @@ def key_callback(window, key, scancode, action, mods):
             game_running = True  
         elif key == glfw.KEY_ESCAPE and action == glfw.PRESS:
             print("Pressed ESCAPE")
+            if Guide:
+                Guide = False
+            if high_scoreFlag:
+                high_scoreFlag = False
             if game_running==False:
                 glfw.set_window_should_close(window, True)
             else:
@@ -960,15 +997,25 @@ def initialize():
 #...................Reset/Initialize......................
 
 #...................Render High Score......................
-def render_high_score():
-    global high_score
+def render_high_score(window):
+    global high_score , high_scoreFlag
     if os.path.isfile("high_score.txt"):
             file = open("high_score.txt", "r")
             high_score = file.readline()
     else:
-            print("File does not exist")
-    file.close()
-    
+            high_score = '0'
+    # file.close()
+    while True:
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+                
+        glfw.poll_events()
+        render_text(-300,0,50, 5, text="Hight Score "+str(high_score))
+        glfw.swap_buffers(window)
+        glfw.poll_events()
+        if high_scoreFlag == False:
+            break
+
+
 #...................Render High Score......................
 
 def myEvent(Window):
@@ -1056,6 +1103,8 @@ def main():
     while not glfw.window_should_close(Window):
         if game_running:
             myEvent(Window)
+        elif Guide:
+            render_Guide(window=Window)
         else:
             render_homepage(window=Window)
         glfw.poll_events()
