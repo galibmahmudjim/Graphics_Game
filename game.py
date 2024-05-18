@@ -660,13 +660,13 @@ def main():
     glfw.set_cursor_pos_callback(Window, cursor_position_callback)
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-
+    game_running = True
     while not glfw.window_should_close(Window):
-        if game_running:
+        # if game_running:
             myEvent(Window)
-        else:
-            render_homepage(window=Window)
-        glfw.poll_events()
+        # else:
+            # render_homepage(window=Window)
+            glfw.poll_events()
 
     glfw.terminate()
 
