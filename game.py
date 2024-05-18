@@ -626,6 +626,9 @@ def main():
     
     monitor = glfw.get_primary_monitor()
     mode = glfw.get_video_mode(monitor)
+
+    glutInit(sys.argv)
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH)
     glfw.window_hint(glfw.RED_BITS, mode.bits.red)
     glfw.window_hint(glfw.GREEN_BITS, mode.bits.green)
     glfw.window_hint(glfw.BLUE_BITS, mode.bits.blue)
