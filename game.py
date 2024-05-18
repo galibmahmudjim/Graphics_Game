@@ -12,6 +12,7 @@ import random
 
 
 
+
 #Base
 game_running = False
 colors= [[255,255,255],
@@ -839,7 +840,10 @@ def check_bricks_collision(bricks_list,bricks_display_list,ball_center_x,ball_ce
             if bricks_display_list[i][j]:
                 brick_points = bricks_list[i][j]
                 if update_ball_position(brick_points,(ball_center_x,ball_center_y),ball_radius):        
-                    bricks_display_list[i][j] = False
+                    if i!=len(bricks_list)-1 and bricks_display_list[i+1][j]:
+                        bricks_display_list[i+1][j] = False
+                    else:
+                        bricks_display_list[i][j] = False
                     return True
     return False
 #...................Game Logic.....................
@@ -964,7 +968,6 @@ def render_high_score():
     else:
             print("File does not exist")
     file.close()
-    #draw_text(-W//2+10, H//2-50, f"High Score = {high_score}", GLUT_STROKE_ROMAN, 0.3, 5, 10)
     
 #...................Render High Score......................
 
@@ -976,6 +979,7 @@ def myEvent(Window):
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
                 
             glfw.poll_events()
+            render_text(-W//2+10, H//2-50, 50, 5, f"Score = {total_score}")
             draw_bricks(bricks_list,bricks_color_list,bricks_display_list)
             draw_paddle(paddle_points)
             draw_circle(r,x_c,y_c)
@@ -1015,7 +1019,6 @@ def main():
     global W, H, FPS, game_running
     if not glfw.init():
         return
-    
     monitor = glfw.get_primary_monitor()
     mode = glfw.get_video_mode(monitor)
 
