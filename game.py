@@ -526,7 +526,6 @@ def framebuffer_size_callback(window, width, height):
     W, H = width, height
     print(W, H)
     initialize()
-    glViewport(0, 0, W, H)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     glOrtho(-W/2, W/2-1, -H/2, H/2-1, -1,1)
@@ -643,9 +642,9 @@ def main():
         glfw.terminate()
         return
 
-    # glfw.set_framebuffer_size_callback(Window, framebuffer_size_callback)
-    # width, height = glfw.get_framebuffer_size(Window)
-    # framebuffer_size_callback(Window, W, H)
+    glfw.set_framebuffer_size_callback(Window, framebuffer_size_callback)
+    width, height = glfw.get_framebuffer_size(Window)
+    framebuffer_size_callback(Window, W, H)
 
     glfw.make_context_current(Window)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
