@@ -32,6 +32,409 @@ CYAN= [0, 255, 255]
 MAGENTA= [255, 0, 255]
 GRAY= [127, 127, 127]
 
+#..............Font..........
+
+font = {
+    'A': [
+        0b10001,
+        0b10001,
+        0b10001,
+        0b11111,
+        0b10001,
+        0b10001,
+        0b01110,
+    ],
+    'B': [
+        0b11110,
+        0b10001,
+        0b10001,
+        0b11110,
+        0b10001,
+        0b10001,
+        0b11110,
+    ],
+    'C': [
+        0b01111,
+        0b10000,
+        0b10000,
+        0b10000,
+        0b10000,
+        0b10000,
+        0b01111,
+    ],
+    'D': [
+        0b10001,
+        0b10001,
+        0b10001,
+        0b10001,
+        0b10001,
+        0b11110,
+        0b11110,
+    ],
+    'E': [
+        0b11111,
+        0b10000,
+        0b10000,
+        0b11110,
+        0b10000,
+        0b10000,
+        0b11111,
+    ],
+    'F': [
+        0b11111,
+        0b10000,
+        0b10000,
+        0b11110,
+        0b10000,
+        0b10000,
+        0b10000,
+    ],
+    'G': [
+        0b01111,
+        0b10001,
+        0b10001,
+        0b10011,
+        0b10000,
+        0b10000,
+        0b01111,
+    ],
+    'H': [
+        0b10001,
+        0b10001,
+        0b10001,
+        0b11111,
+        0b10001,
+        0b10001,
+        0b10001,
+    ],
+    'I': [
+        0b11111,
+        0b00100,
+        0b00100,
+        0b00100,
+        0b00100,
+        0b00100,
+        0b11111,
+    ],
+    'J': [
+        0b00001,
+        0b00001,
+        0b00001,
+        0b00001,
+        0b00001,
+        0b10001,
+        0b01110,
+    ],
+    'K': [
+        0b10001,
+        0b10010,
+        0b10100,
+        0b11000,
+        0b10100,
+        0b10010,
+        0b10001,
+    ],
+    'L': [
+        0b11111,
+        0b10000,
+        0b10000,
+        0b10000,
+        0b10000,
+        0b10000,
+        0b10000,
+    ],
+    'M': [
+
+        0b10001,
+        0b10001,
+        0b10001,
+        0b10001,
+        0b10101,
+        0b10101,
+        0b01010,
+    ],
+    'N': [
+        0b10001,
+        0b10001,
+        0b10011,
+        0b10101,
+        0b11001,
+        0b10001,
+        0b10001,
+    ],
+    'O': [
+        0b01110,
+        0b10001,
+        0b10001,
+        0b10001,
+        0b10001,
+        0b10001,
+        0b01110,
+    ],
+    'P': [
+        0b10000,
+        0b10000,
+        0b10000,
+        0b11110,
+        0b10001,
+        0b10001,
+        0b11110,
+    ],
+    'Q': [
+        0b01110,
+        0b10001,
+        0b10001,
+        0b10001,
+        0b10101,
+        0b10010,
+        0b01101,
+    ],
+    'R': [
+        0b10001,
+        0b10010,
+        0b10100,
+        0b11110,
+        0b10001,
+        0b10001,
+        0b11110,
+    ],
+    'S': [
+        0b11110,
+        0b00001,
+        0b00001,
+        0b01110,
+        0b10000,
+        0b10000,
+        0b01111,
+    ],
+    'T': [
+        0b00100,
+        0b00100,
+        0b00100,
+        0b00100,
+        0b00100,
+        0b00100,
+        0b11111,
+    ],
+    'U': [
+        0b01110,
+        0b10001,
+        0b10001,
+        0b10001,
+        0b10001,
+        0b10001,
+        0b10001,
+    ],
+    'V': [
+        0b10001,
+        0b10001,
+        0b10001,
+        0b10001,
+        0b10001,
+        0b01010,
+        0b00100,
+    ],
+    'W': [
+
+        0b10001,
+        0b11011,
+        0b10101,
+        0b10001,
+        0b10001,
+        0b10001,
+        0b10001,
+    ],
+    'X': [
+        0b10001,
+        0b10001,
+        0b01010,
+        0b00100,
+        0b01010,
+        0b10001,
+        0b10001,
+    ],
+    'Y': [
+        0b10001,
+        0b10001,
+        0b10001,
+        0b01010,
+        0b00100,
+        0b00100,
+        0b00100,
+    ],
+    'Z': [
+        0b11111,
+        0b10000,
+        0b01000,
+        0b00100,
+        0b00010,
+        0b00001,
+        0b11111,
+    ],
+    '0': [
+        0b01110,
+        0b10001,
+        0b10011,
+        0b10101,
+        0b11001,
+        0b10001,
+        0b01110,
+    ],
+    '1': [
+        0b00100,
+        0b01100,
+        0b00100,
+        0b00100,
+        0b00100,
+        0b00100,
+        0b11111,
+    ],
+    '2': [
+        0b01110,
+        0b10001,
+        0b00001,
+        0b00110,
+        0b01000,
+        0b10000,
+        0b11111,
+    ],
+    '3': [
+        0b11110,
+        0b00001,
+        0b00001,
+        0b01110,
+        0b00001,
+        0b00001,
+        0b11110,
+    ],
+    '4': [
+        0b00010,
+        0b00110,
+        0b01010,
+        0b10010,
+        0b11111,
+        0b00010,
+        0b00010,
+    ],
+    '5': [
+        0b11111,
+        0b10000,
+        0b11110,
+        0b00001,
+        0b00001,
+        0b10001,
+        0b01110,
+    ],
+    '6': [
+        0b01110,
+        0b10000,
+        0b11110,
+        0b10001,
+        0b10001,
+        0b10001,
+        0b01110,
+    ],
+    '7': [
+        0b11111,
+        0b00001,
+        0b00010,
+        0b00100,
+        0b01000,
+        0b01000,
+        0b01000,
+    ],
+    '8': [
+        0b01110,
+        0b10001,
+        0b10001,
+        0b01110,
+        0b10001,
+        0b10001,
+        0b01110,
+    ],
+    '9': [
+        0b01110,
+        0b10001,
+        0b10001,
+        0b01111,
+        0b00001,
+        0b10001,
+        0b01110,
+    ],
+    '[': [
+        0b01110,
+        0b01000,
+        0b01000,
+        0b01000,
+        0b01000,
+        0b01000,
+        0b01110,
+    ],
+    ']': [
+        0b01110,
+        0b00010,
+        0b00010,
+        0b00010,
+        0b00010,
+        0b00010,
+        0b01110,
+    ],
+    '>':[
+        0b10000,
+        0b01000,
+        0b00100,
+        0b00010,
+        0b00100,
+        0b01000,
+        0b10000,
+    ],
+    '<':[
+        0b00001,
+        0b00010,
+        0b00100,
+        0b01000,
+        0b00100,
+        0b00010,
+        0b00001,
+    ],
+    '^':[
+        0b00000,
+        0b00000,
+        0b00000,
+        0b00100,
+        0b01010,
+        0b01010,
+        0b10001,
+    ]
+
+}
+
+def get_char_bitmap(char):
+    fontbits = font.get(char.upper(), [0] * 7)
+    # fontbits.reverse()  # Reverse the list in-place
+    return fontbits  # Return the reversed list
+
+
+# Render function
+def render_text(x, y, height, pointSize, text):
+    glColor3ub(255, 255, 255)
+    glPointSize(pointSize)
+    glBegin(GL_POINTS)
+    
+    scale = height / 7  # Calculate scale based on desired character height
+    start_x = x
+    
+    for char in text:
+        bitmap = get_char_bitmap(char)
+        for row in range(7):
+            bits = bitmap[row]
+            for col in range(5):
+                if bits & (1 << (4 - col)):
+                    glVertex2f(x + col * scale, y + row * scale)
+        x += 6 * scale  # Move to the next character position
+
+    glEnd() 
+        
 #...................Constants......................
 cursor_x, cursor_y = 0, 0
 text_visible = True
@@ -178,27 +581,8 @@ def draw_circle(r,x_c,y_c):
 
 #...................HomePage......................
 
-def get_text_width(text, font=GLUT_STROKE_ROMAN, scale=1, spacing=0):
-    width = 0
-    for ch in text:
-        width += glutStrokeWidth(font, ord(ch)) * scale + spacing
-    return width
-def draw_text(x, y, text, font=GLUT_STROKE_ROMAN, scale=0.3, thickness=5,spacing=10):
-    glPushMatrix()
-    glTranslatef(x, y, 0)
-    glScalef(scale, scale, scale)
-    for dx in range(-thickness, thickness+1):
-        for dy in range(-thickness, thickness+1):
-            if dx != 0 or dy != 0:
-                glPushMatrix()
-                glTranslatef(dx, dy, 0)
-                for ch in text:
-                    glTranslatef(spacing, 0, 0)
-                    glutStrokeCharacter(font, ord(ch))
-                glPopMatrix()
-    glColor3f(1, 1, 1)  # Set text color to white
 
-    glPopMatrix()
+
 
 def render_homepage(window):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -210,7 +594,8 @@ def render_homepage(window):
     text4 = "High Score"
     text5 = "Help"
     text7 = "Exit"
-    text6 = "Press SPACE to Start and Escape to Return Menu"
+    text6 = "Press SPACE to Start"
+    text8 = "ESC to Exit"
 
     
     scale = 0.7
@@ -220,21 +605,22 @@ def render_homepage(window):
     thicknessMenu = 5
     spacingMenu = 7
     # Calculate centered positions
-    text1_width = get_text_width(text1, GLUT_STROKE_ROMAN, scale, spacing)
-    text2_width = get_text_width(text2, GLUT_STROKE_ROMAN, scaleMenu, spacingMenu)
-    text3_width = get_text_width(text3, GLUT_STROKE_ROMAN, scaleMenu, spacingMenu)
-    text4_width = get_text_width(text4, GLUT_STROKE_ROMAN, scaleMenu, spacingMenu)
-    text5_width = get_text_width(text5, GLUT_STROKE_ROMAN, scaleMenu, spacingMenu)
-    text7_width = get_text_width(text7, GLUT_STROKE_ROMAN, scaleMenu, spacingMenu)
-    text6_width = get_text_width(text6, GLUT_STROKE_ROMAN, 0.22, spacingMenu)
+    text1_width = 800
+    text2_width = 500
+    text3_width = 500
+    text4_width = 500
+    text5_width = 500
+    text7_width = 500
+    text6_width = 800
     H_point = 400
-    x1 = -(text1_width/2)+(text1_width/50)*scale
-    x2 = -(text2_width/2)+(text2_width/20)*scaleMenu
-    x3 = -(text3_width/2)+(text3_width/20)*scaleMenu
-    x4 = -(text4_width/2)+(text4_width/20)*scaleMenu
-    x5 = -(text5_width/2)+(text5_width/20)*scaleMenu
-    x6 = -(text6_width/2)+(text5_width/20)*scaleMenu
-    x7 = -(text7_width/2)+(text5_width/20)*scaleMenu
+    x1 = -(text1_width/2)
+    x2 = -(text2_width/2)
+    x3 = -(text3_width/2)
+    x4 = -(text4_width/2)
+    x5 = -(text5_width/2)
+    x7 = -(text7_width/2)
+    x6 = -(text6_width/2)
+
     y1 = H_point-175
     y2 = H_point-275
     y3 = H_point-375
@@ -248,7 +634,8 @@ def render_homepage(window):
 
     glColor3f(BLUE[0],BLUE[1],BLUE[2])
     # print(x2, y2, text2_width, cursor_x, cursor_y, W, H)
-    draw_text(x1, y1, text1, GLUT_STROKE_ROMAN, scale, thickness, spacing)
+    render_text(x1, y1, 50, 5, text1)
+
 
     if x2 <= cursorX <= x2+text2_width and y2-50 <= cursorY <= y2+50:
         glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
@@ -258,7 +645,7 @@ def render_homepage(window):
             game_running = True
     else:
         glColor3f(WHITE[0],WHITE[1],WHITE[2])
-    draw_text(x2, y2, text2, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
+    render_text(x2, y2, 50, 5, text2)
     if x3 <= cursorX <= x3+text3_width and y3-50 <= cursorY <= y3+50:
         glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
         print("Continue")
@@ -266,19 +653,22 @@ def render_homepage(window):
             game_running = True
     else:
         glColor3f(WHITE[0],WHITE[1],WHITE[2])
-    draw_text(x3, y3, text3, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
+    # #draw_text(x3, y3, text3, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
+    render_text(x3, y3, 50, 5, text3)
     if x4 <= cursorX <= x4+text4_width and y4-50 <= cursorY <= y4+50:
         glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
     
     else:
         glColor3f(WHITE[0],WHITE[1],WHITE[2])
-    draw_text(x4, y4, text4, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
+    # #draw_text(x4, y4, text4, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
+    render_text(x4, y4, 50, 5, text4)
     if x5 <= cursorX <= x5+text5_width and y5-50 <= cursorY <= y5+50:
         glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
         print("Help")
     else:
         glColor3f(WHITE[0],WHITE[1],WHITE[2])
-    draw_text(x5, y5, text5, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
+    #draw_text(x5, y5, text5, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
+    render_text(x5, y5, 50, 5, text5)
 
     if x7 <= cursorX <= x7+text7_width and y7-50 <= cursorY <= y7+50:
         glColor3f(YELLOW[0],YELLOW[1],YELLOW[2])
@@ -287,8 +677,8 @@ def render_homepage(window):
             glfw.set_window_should_close(window, True)
     else:
         glColor3f(WHITE[0],WHITE[1],WHITE[2])
-    draw_text(x7, y7, text7, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
-
+    #draw_text(x7, y7, text7, GLUT_STROKE_ROMAN, scaleMenu, thicknessMenu, spacingMenu)
+    render_text(x7, y7, 50, 5, text7)
     current_time = time.time()
     global text_visible, last_toggle_time, ran
     if current_time - last_toggle_time > 1:
@@ -299,7 +689,9 @@ def render_homepage(window):
     if text_visible:
         
         glColor3f(colors[ran][0], colors[ran][1], colors[ran][2])
-        draw_text(x6, y6, text6, GLUT_STROKE_ROMAN, 0.3, thicknessMenu, spacingMenu)
+        #draw_text(x6, y6, text6, GLUT_STROKE_ROMAN, 0.3, thicknessMenu, spacingMenu)
+        render_text(x6, y6, 50, 5, text6)
+        render_text(x6+30, y6-80, 50, 5, text8)
 
 
     
@@ -467,8 +859,8 @@ def construct_bricks(brick_width=W//20,brick_rows = 5):
         for j in range(row_brick_number):
             one_brick = []
             p1_x = -(W//2) + (j)*brick_width + PointerSize/2
-            p1_y = (H//2) - (i)*brick_height - PointerSize/2
-            
+            p1_y = (H//2) - (i)*brick_height - PointerSize/2 -60
+
             p2_x = p1_x + PointerSize
             p2_y = p1_y
             one_brick.append((p1_x,p1_y))
@@ -572,7 +964,7 @@ def render_high_score():
     else:
             print("File does not exist")
     file.close()
-    draw_text(-W//2+10, H//2-50, f"High Score = {high_score}", GLUT_STROKE_ROMAN, 0.3, 5, 10)
+    #draw_text(-W//2+10, H//2-50, f"High Score = {high_score}", GLUT_STROKE_ROMAN, 0.3, 5, 10)
     
 #...................Render High Score......................
 
@@ -597,7 +989,7 @@ def myEvent(Window):
                 tx *= -1
             if (x_c-r)<(-W/2):
                 tx *= -1
-            if (y_c+r)>(H/2-1):
+            if (y_c+r+60)>(H/2-1):
                 ty *= -1
             if (y_c-r)<(-H/2):
                 ty *= -1
@@ -658,13 +1050,12 @@ def main():
     glfw.set_cursor_pos_callback(Window, cursor_position_callback)
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    game_running = True
     while not glfw.window_should_close(Window):
-        # if game_running:
+        if game_running:
             myEvent(Window)
-        # else:
-            # render_homepage(window=Window)
-            glfw.poll_events()
+        else:
+            render_homepage(window=Window)
+        glfw.poll_events()
 
     glfw.terminate()
 
